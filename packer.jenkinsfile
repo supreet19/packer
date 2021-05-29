@@ -1,0 +1,27 @@
+pipeline {
+  agent any
+    stages {
+    stage('fetch_latest_code') {
+      steps {
+        git url: 'https://github.com/supreet19/packer.git'
+      }
+    }
+
+    stage('Packer validate') {
+      steps {
+        withAWS(credentials: 'japneet-aws') {
+          sh 'packer validate packer-demo.json'
+        }
+      }
+    }
+
+    stage('Packer build') {
+      steps {
+        withAWS(credentials: 'japneet-aws') {
+          sh 'packer build packer-demo.json'
+        }
+      }
+    }
+
+  }
+}
